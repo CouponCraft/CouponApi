@@ -1,5 +1,8 @@
-using CouponApi.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
+using CouponApi.Data;
+using CouponApi.Extensions;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -8,11 +11,17 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Database configuration
-builder.Services.AddDbContext<CouponApiContext>(options =>
+builder.Services.AddDbContext<CouponsContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("MyConnection"),
     Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.20-mysql"),
     mySqlOptions => mySqlOptions.EnableRetryOnFailure())
 );
+
+// Controllers
+builder.Services.AddControllers();
+
+// Repositories scopes
+builder.Services.AddRepositories(Assembly.GetExecutingAssembly());
 
 var app = builder.Build();
 
@@ -22,6 +31,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.MapControllers();
 
 app.UseHttpsRedirection();
 

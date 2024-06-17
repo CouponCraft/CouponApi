@@ -2,9 +2,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CouponApi.Data
 {
-    public class CouponApiContext : DbContext
+    public class CouponsContext : DbContext
     {
-        public CouponApiContext(DbContextOptions<CouponApiContext> options) : base(options) {}
+        public CouponsContext(DbContextOptions<CouponsContext> options) : base(options) {}
 
         
     }
