@@ -22,7 +22,14 @@ namespace CouponApi.Controllers.Coupons
                 {
                     return NotFound(message);
                 }
-                return Ok(coupons);
+
+                var response = new
+                {
+                    Message = message,
+                    Coupons = coupons
+                };
+                
+                return Ok(response);
             }
             catch (Exception ex)
             {
