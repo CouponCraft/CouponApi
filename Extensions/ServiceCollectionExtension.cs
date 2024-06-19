@@ -6,18 +6,18 @@ namespace CouponApi.Extensions
     {
         public static void AddRepositories(this IServiceCollection services, Assembly assembly)
         {
-            // Obtiene todos los tipos en el ensamblado que terminan con "Repository"
+            // Gets all types in the assembly ending with "Repository"
             var types = assembly.GetTypes()
                 .Where(t => t.IsClass && !t.IsAbstract && t.Name.EndsWith("Repository"))
                 .ToList();
 
             foreach (var type in types)
             {
-                // Busca una interfaz que coincida con el nombre de la clase prefijada con 'I'
+                // Searches for an interface that matches the name of the class prefixed with 'I'
                 var interfaceType = type.GetInterface($"I{type.Name}");
                 if (interfaceType != null)
                 {
-                    // Registra la implementación en el contenedor de DI
+                    // Records the implementation in the DI container
                     services.AddScoped(interfaceType, type);
                 }
             }
