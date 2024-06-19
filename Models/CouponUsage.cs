@@ -8,7 +8,7 @@ namespace CouponApi.Models
         [Required] public DateTime? UsageDate { get; set; }
         [Required] public int? CouponId { get; set; }
         public Coupon? Coupon { get; set; }
-        [Required] public int? UserId { get; set; }
+        [Required] public int? MarketplaceUserId { get; set; }
         public MarketplaceUser? User { get; set; }
     }
 }

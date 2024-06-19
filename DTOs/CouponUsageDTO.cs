@@ -6,6 +6,6 @@ namespace CouponApi.DTOs
     {
         [Required] public DateTime? UsageDate { get; set; }
         [Required] public int? CouponId { get; set; }
-        [Required] public int? UserId { get; set; }
+        [Required] public int? MarketplaceUserId { get; set; }
     }
 }
