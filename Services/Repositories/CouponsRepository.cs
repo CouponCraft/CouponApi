@@ -21,8 +21,7 @@ namespace CouponApi.Services.Repositories
 
         public async Task<(IEnumerable<Coupon> coupons, string message, HttpStatusCode statusCode)> GetAll()
         {
-            // Includes missing
-            var coupons = await _context.Coupons.Include(c => c.MarketingUser).Where(c => c.Status.ToLower().Equals("active")).ToListAsync();
+            var coupons = await _context.Coupons.Include(c => c.MarketingUser).Where(c => c.Status!.ToLower().Equals("active")).ToListAsync();
             if (coupons.Any())
                 return (coupons, "Coupons have been successfully obtained.", HttpStatusCode.OK);
             else
@@ -31,8 +30,7 @@ namespace CouponApi.Services.Repositories
 
         public async Task<(IEnumerable<Coupon> coupons, string message, HttpStatusCode statusCode)> GetAllInactive()
         {
-            // Includes missing
-            var coupons = await _context.Coupons.Include(c => c.MarketingUser).Where(c => c.Status.ToLower().Equals("inactive")).ToListAsync();
+            var coupons = await _context.Coupons.Include(c => c.MarketingUser).Where(c => c.Status!.ToLower().Equals("inactive")).ToListAsync();
             if (coupons.Any())
                 return (coupons, "Coupons have been successfully obtained.", HttpStatusCode.OK);
             else
@@ -41,11 +39,11 @@ namespace CouponApi.Services.Repositories
 
         public async Task<(Coupon coupon, string message, HttpStatusCode statusCode)> GetById(int id)
         {
-            var coupon = await _context.Coupons.Include(c => c.MarketingUser).Where(c => c.Status.ToLower().Equals("inactive")).FirstOrDefaultAsync(c => c.Id.Equals(id));
+            var coupon = await _context.Coupons.Include(c => c.MarketingUser).Where(c => c.Status!.ToLower().Equals("inactive")).FirstOrDefaultAsync(c => c.Id.Equals(id));
             if (coupon != null)
                 return (coupon, "Coupon has been successfully obtained.", HttpStatusCode.OK);
             else
-                return (default(Coupon), "No coupon found in the database.", HttpStatusCode.NotFound);
+                return (default(Coupon)!, "No coupon found in the database.", HttpStatusCode.NotFound);
         }
 
         public async Task<(Coupon coupon, string message, HttpStatusCode statusCode)> Update(int id, CouponDTO coupon)
