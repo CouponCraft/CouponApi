@@ -14,6 +14,6 @@ namespace CouponApi.DTOs
         [Required] public decimal? MinPurchaseAmount { get; set; }
         [Required] public decimal? MaxPurchaseAmount { get; set; }
         [Required] public string? Status { get; set; }
-        [Required] public int? CreatedBy { get; set; }
+        [Required] public int? MarketingUserId { get; set; }
     }
 }
