@@ -1,24 +1,24 @@
 using Microsoft.AspNetCore.Mvc;
 using CouponApi.Services.Interfaces;
-using CouponApi.Models;
+using CouponApi.DTOs;
 
 namespace CouponApi.Controllers.Coupons
 {
-    public class CouponsController : ControllerBase
+    public class CouponsUpdateController : ControllerBase
     {
         private readonly ICouponsRepository _couponsRepository;
-        public CouponsController(ICouponsRepository couponsRepository)
+        public CouponsUpdateController(ICouponsRepository couponsRepository)
         {
             _couponsRepository = couponsRepository;
         }
 
-        [HttpGet, Route("api/coupons")]
-        public async Task<IActionResult> GetAll()
+        [HttpPut, Route("api/coupons/{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] CouponDTO coupon)
         {
             try
             {
-                var (coupons, message, statusCode) = await _couponsRepository.GetAll();
-                if (coupons == null || coupons == Enumerable.Empty<Coupon>())
+                var (updatedCoupon, message, statusCode) = await _couponsRepository.Update(id, coupon);
+                if (updatedCoupon == null)
                 {
                     return NotFound(message);
                 }
@@ -26,46 +26,22 @@ namespace CouponApi.Controllers.Coupons
                 var response = new
                 {
                     Message = message,
-                    Coupons = coupons
+                    Coupon = updatedCoupon
                 };
                 return Ok(response);
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Error obtaining coupons: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error updating coupon: {ex.Message}");
             }
         }
 
-        [HttpGet, Route("api/coupons/inactive")]
-        public async Task<IActionResult> GetAllInactive()
+        [HttpPut, Route("api/coupons/{id}/inactivate")]
+        public async Task<IActionResult> Inactivate(int id)
         {
             try
             {
-                var (coupons, message, statusCode) = await _couponsRepository.GetAllInactive();
-                if (coupons == null || coupons == Enumerable.Empty<Coupon>())
-                {
-                    return NotFound(message);
-                }
-
-                var response = new
-                {
-                    Message = message,
-                    Coupons = coupons
-                };
-                return Ok(response);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Error obtaining coupons: {ex.Message}");
-            }
-        }
-
-        [HttpGet, Route("api/coupons/{id}")]
-        public async Task<IActionResult> GetById(int id)
-        {
-            try
-            {
-                var (coupon, message, statusCode) = await _couponsRepository.GetById(id);
+                var (coupon, message, statusCode) = await _couponsRepository.InactivateCoupon(id);
                 if (coupon == null)
                 {
                     return NotFound(message);
@@ -80,7 +56,31 @@ namespace CouponApi.Controllers.Coupons
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Error obtaining coupon: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error inactivating coupon: {ex.Message}");
+            }
+        }
+
+        [HttpPut, Route("api/coupons/{id}/activate")]
+        public async Task<IActionResult> Activate(int id)
+        {
+            try
+            {
+                var (coupon, message, statusCode) = await _couponsRepository.ActivateCoupon(id);
+                if (coupon == null)
+                {
+                    return NotFound(message);
+                }
+
+                var response = new
+                {
+                    Message = message,
+                    Coupon = coupon
+                };
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error activating coupon: {ex.Message}");
             }
         }
     }
