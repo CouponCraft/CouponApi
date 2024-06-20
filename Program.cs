@@ -10,6 +10,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Add services of Automapper
+// builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 // Database configuration
 builder.Services.AddDbContext<CouponsContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("MyConnection"),
