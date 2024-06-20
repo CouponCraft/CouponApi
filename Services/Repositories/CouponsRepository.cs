@@ -18,15 +18,7 @@ namespace CouponApi.Services.Repositories
             _mapper = mapper;
         }
         public async Task<(Coupon coupon, string message, HttpStatusCode statusCode)> Add(CouponDTO coupon)
-        {
-            /* // validate the coupon
-            if (!ModelState.IsValid)
-            {
-                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
-                return (default(Coupon)!, string.Join(", ", errors), HttpStatusCode.BadRequest);
-            } */
-
-            // add coupon with the dto                       
+        {                    
             var newCoupon = _mapper.Map<Coupon>(coupon);
             await _context.Coupons.AddAsync(newCoupon);
             await _context.SaveChangesAsync();
@@ -35,11 +27,11 @@ namespace CouponApi.Services.Repositories
 
         public async Task<(IEnumerable<Coupon> coupons, string message, HttpStatusCode statusCode)> GetAll()
         {
-            var coupons = await _context.Coupons.Include(c => c.MarketingUser).Where(c => c.Status!.ToLower() == "active" || c.Status.ToLower() == "expired").ToListAsync();
+            var coupons = await _context.Coupons.Include(c => c.MarketingUser).Where(c => c.Status!.ToLower() != "inactive").ToListAsync();
             if (coupons.Any())
                 return (coupons, "Coupons have been successfully obtained.", HttpStatusCode.OK);
             else
-                return (Enumerable.Empty<Coupon>(), "No coupons found in the database.", HttpStatusCode.NotFound);
+                return (Enumerable.Empty<Coupon>(), "No active or expire coupons found in the database.", HttpStatusCode.NotFound);
         }
 
         public async Task<(IEnumerable<Coupon> coupons, string message, HttpStatusCode statusCode)> GetAllInactive()
@@ -48,7 +40,7 @@ namespace CouponApi.Services.Repositories
             if (coupons.Any())
                 return (coupons, "Coupons have been successfully obtained.", HttpStatusCode.OK);
             else
-                return (Enumerable.Empty<Coupon>(), "No coupons found in the database.", HttpStatusCode.NotFound);
+                return (Enumerable.Empty<Coupon>(), "No inactive coupons found in the database.", HttpStatusCode.NotFound);
         }
 
         public async Task<(Coupon coupon, string message, HttpStatusCode statusCode)> GetById(int id)
